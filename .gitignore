@@ -8,6 +8,5 @@ yarn-error.log
 *.env
 
 # Игнорировать зависимости проекта
-package.json
 package-lock.json
 yarn.lock
