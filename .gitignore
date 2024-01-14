@@ -1,0 +1,13 @@
+# Игнорировать временные файлы
+node_modules/
+npm-debug.log
+yarn-error.log
+*.log
+
+# Игнорировать файлы конфигурации
+*.env
+
+# Игнорировать зависимости проекта
+package.json
+package-lock.json
+yarn.lock
