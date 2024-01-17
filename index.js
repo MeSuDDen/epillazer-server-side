@@ -80,8 +80,41 @@ app.post('/api/send-email', (req, res) => {
 })
 
 // Пример данных о товаре
-app.get('/api/news', (req, res) => {
-	const sql = 'SELECT * FROM news'
+app.get('/api/latest-news', (req, res) => {
+	// Получаем параметры запроса
+	const limit = req.query.limit || 10 // По умолчанию 10 записей
+	const sortBy = req.query.sortBy || 'date_published' // По умолчанию сортируем по дате публикации
+
+	// Формируем SQL-запрос с использованием параметров
+	const sql = `SELECT * FROM news ORDER BY ${sortBy} DESC LIMIT ${limit}`
+
+	connection.query(sql, (err, result) => {
+		if (err) {
+			console.error('Ошибка выполнения запроса:', err)
+			res.status(500).send('Ошибка сервера')
+		} else {
+			res.json(result)
+		}
+	})
+})
+
+app.get('/api/all-news', (req, res) => {
+	// Получаем параметры запроса
+	const limit = parseInt(req.query.limit) || 3 // По умолчанию 10 записей
+	const offset = parseInt(req.query.offset) || 0 // По умолчанию начинаем с первой записи
+	const sortBy = req.query.sortBy || 'date_published' // По умолчанию сортируем по дате публикации
+
+	// Проверяем, что sortBy равно одному из разрешенных значений, чтобы избежать SQL-инъекций
+	const allowedSortByValues = [
+		'date_published' /* Другие разрешенные значения */,
+	]
+	if (!allowedSortByValues.includes(sortBy)) {
+		return res.status(400).send('Недопустимое значение sortBy')
+	}
+
+	// Формируем SQL-запрос с использованием параметров
+	const sql = `SELECT * FROM news ORDER BY ${sortBy} DESC LIMIT ${offset}, ${limit}`
+
 	connection.query(sql, (err, result) => {
 		if (err) {
 			console.error('Ошибка выполнения запроса:', err)
