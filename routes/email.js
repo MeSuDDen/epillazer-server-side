@@ -7,27 +7,25 @@ const router = express.Router()
 router.post('/send-email', async (req, res) => {
 	const { name, phone } = req.body
 
-	try {
-		// Настройки для отправки почты через SMTP (пример для Gmail)
-		const transporter = nodemailer.createTransport({
-			service: 'gmail',
-			auth: {
-				user: 'rusokoro2002@gmail.com',
-				pass: 'ypur ojln ksci xzfv',
-			},
-			secure: false,
-			tls: {
-				rejectUnauthorized: false,
-			},
-		})
+	const transporter = nodemailer.createTransport({
+		service: 'gmail',
+		auth: {
+			user: 'rusokoro2002@gmail.com',
+			pass: 'ypur ojln ksci xzfv',
+		},
+		secure: false,
+		tls: {
+			rejectUnauthorized: false,
+		},
+	})
 
-		// Опции письма
-		const mailOptions = {
-			from: 'rusokoro2002@gmail.com',
-			to: 'rusokoro2002@gmail.com',
-			subject: 'Новая заявка от клиента',
-			text: `Имя: ${name}\nТелефон: ${phone}`,
-			html: `
+	// Опции письма
+	const mailOptions = {
+		from: 'rusokoro2002@gmail.com',
+		to: 'rusokoro2002@gmail.com',
+		subject: 'Новая заявка от клиента',
+		text: `Имя: ${name}\nТелефон: ${phone}`,
+		html: `
 			<html>
 	<head>
 		<link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -138,17 +136,16 @@ router.post('/send-email', async (req, res) => {
 </html>
 
 			`,
-		}
-
-		// Отправка письма
-		const info = await transporter.sendMail(mailOptions)
-		console.log('Письмо успешно отправлено:', info.response)
-
-		res.json({ success: true })
-	} catch (error) {
-		console.error('Ошибка отправки письма:', error)
-		res.status(500).json({ error: 'Произошла ошибка при отправке письма' })
 	}
+	transporter.sendMail(mailOptions, (error, info) => {
+		if (error) {
+			console.error('Ошибка отправки письма:', error)
+			res.status(500).json({ error: 'Произошла ошибка при отправке письма' })
+		} else {
+			console.log('Письмо успешно отправлено:', info.response)
+			res.json({ success: true })
+		}
+	})
 })
 
 module.exports = router

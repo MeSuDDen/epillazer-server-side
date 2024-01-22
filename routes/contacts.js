@@ -8,7 +8,6 @@ router.post('/contacts/from', async (req, res) => {
 	const { name, phone, email, text } = req.body
 
 	try {
-		VYiQzr32Hihzzkd0
 
 		const mailOptions = {
 			from: 'rusokoro2002@gmail.com',
